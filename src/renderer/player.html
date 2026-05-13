@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Player - CourseMera</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+</head>
+<body>
+    <header class="player-header">
+        <a href="index.html" class="back-link">← Back to Courses</a>
+        <span id="courseTitleHeader" class="header-course-title"></span>
+        <button id="themeToggle" class="icon-btn" title="Toggle theme">🌙</button>
+    </header>
+
+    <div class="player-layout" id="playerLayout">
+        <aside class="player-sidebar" id="sidebar">
+            <div class="sidebar-header" id="sidebarHeader"></div>
+            <div class="sidebar-content" id="sidebarContent"></div>
+        </aside>
+        <div class="player-content" id="playerContent">
+            <div class="video-wrapper" id="videoWrapper">
+                <div class="double-click-left" id="doubleClickLeft"></div>
+                <div class="double-click-right" id="doubleClickRight"></div>
+                <video id="videoPlayer"></video>
+                <div class="video-overlay" id="videoOverlay">
+                    <button class="play-btn-large" id="playBtnLarge">▶</button>
+                </div>
+                <div class="loading-spinner" id="loadingSpinner"></div>
+                <div class="seek-indicator" id="seekIndicator"></div>
+            </div>
+            <div class="html-content-container" id="htmlContentContainer" style="display: none;"></div>
+            <div class="controls-bar" id="controlsBar">
+                <div class="progress-container" id="progressContainer">
+                    <div class="progress-buffered" id="progressBuffered"></div>
+                    <div class="progress-bar" id="progressBar">
+                        <div class="progress-played" id="progressPlayed"></div>
+                    </div>
+                    <span class="time-tooltip" id="timeTooltip"></span>
+                </div>
+                <div class="controls-row">
+                    <div class="controls-left">
+                        <button class="ctrl-btn" id="playBtn">▶</button>
+                        <button class="ctrl-btn" id="rewindBtn" title="Rewind 10s (J)">⏪</button>
+                        <button class="ctrl-btn" id="forwardBtn" title="Forward 10s (L)">⏩</button>
+                        <div class="volume-control">
+                            <button class="ctrl-btn" id="muteBtn" title="Mute (M)">🔊</button>
+                            <input type="range" id="volumeSlider" min="0" max="1" step="0.1" value="1">
+                        </div>
+                        <span class="time-display" id="timeDisplay">0:00 / 0:00</span>
+                    </div>
+                    <div class="controls-right">
+                        <button class="ctrl-btn" id="speedBtn" title="Playback speed">1x</button>
+                        <button class="ctrl-btn" id="theaterBtn" title="Theater mode (T)">⛶</button>
+                        <button class="ctrl-btn" id="fullscreenBtn" title="Fullscreen (F)">⛶</button>
+                        <button class="ctrl-btn" id="pipBtn" title="Picture-in-Picture (I)">📺</button>
+                        <button class="ctrl-btn" id="helpBtn" title="Keyboard shortcuts (?)">❓</button>
+                    </div>
+                </div>
+            </div>
+            <div class="speed-menu" id="speedMenu">
+                <button data-speed="0.25">0.25x</button>
+                <button data-speed="0.5">0.5x</button>
+                <button data-speed="0.75">0.75x</button>
+                <button data-speed="1">1x</button>
+                <button data-speed="1.25">1.25x</button>
+                <button data-speed="1.5">1.5x</button>
+                <button data-speed="1.75">1.75x</button>
+                <button data-speed="2">2x</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="sticky-footer" id="stickyFooter">
+        <button class="nav-btn" id="prevBtn">← Previous</button>
+        <button class="complete-btn" id="stickyCompleteBtn">✓ Mark Complete</button>
+        <button class="nav-btn" id="nextBtn">Next →</button>
+    </div>
+
+    <div class="keyboard-help" id="keyboardHelp">
+        <h3>Keyboard Shortcuts</h3>
+        <div class="shortcut-grid">
+            <div><kbd>Space</kbd> / <kbd>K</kbd> <span>Play/Pause</span></div>
+            <div><kbd>J</kbd> <span>Rewind 10s</span></div>
+            <div><kbd>L</kbd> <span>Forward 10s</span></div>
+            <div><kbd>←</kbd> <span>Rewind 5s</span></div>
+            <div><kbd>→</kbd> <span>Forward 5s</span></div>
+            <div><kbd>↑</kbd> <span>Volume Up</span></div>
+            <div><kbd>↓</kbd> <span>Volume Down</span></div>
+            <div><kbd>M</kbd> <span>Mute</span></div>
+            <div><kbd>F</kbd> <span>Fullscreen</span></div>
+            <div><kbd>T</kbd> <span>Theater Mode</span></div>
+            <div><kbd>I</kbd> <span>Picture-in-Picture</span></div>
+            <div><kbd>&lt;</kbd> <span>Slower Speed</span></div>
+            <div><kbd>&gt;</kbd> <span>Faster Speed</span></div>
+            <div><kbd>0-9</kbd> <span>Jump to 0%-90%</span></div>
+            <div><kbd>?</kbd> <span>Show Help</span></div>
+        </div>
+        <button class="close-help" onclick="document.getElementById('keyboardHelp').style.display='none'">Close</button>
+    </div>
+
+    <script src="player.js"></script>
+</body>
+</html>
