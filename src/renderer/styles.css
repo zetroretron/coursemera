@@ -184,11 +184,11 @@ main { flex: 1; padding: 2rem; max-width: 1400px; margin: 0 auto; width: 100%; }
 video { width: 100%; display: block; }
 .video-wrapper.theater-mode video { height: 100%; object-fit: contain; }
 
-.double-click-left, .double-click-right { position: absolute; top: 0; bottom: 0; width: 50%; cursor: pointer; z-index: 10; }
+.double-click-left, .double-click-right { position: absolute; top: 0; bottom: 0; width: 50%; cursor: pointer; z-index: 10; pointer-events: none; }
 .double-click-left { left: 0; }
 .double-click-right { right: 0; }
 
-.video-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; display: flex; align-items: center; justify-content: center; pointer-events: none; }
+.video-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; display: flex; align-items: center; justify-content: center; pointer-events: none; z-index: 5; }
 .play-btn-large { width: 80px; height: 80px; background: rgba(15, 147, 255, 0.9); border: none; border-radius: 50%; color: white; font-size: 2rem; cursor: pointer; pointer-events: auto; display: flex; align-items: center; justify-content: center; transition: transform 0.2s, background 0.2s; }
 .play-btn-large:hover { transform: scale(1.1); background: var(--accent); }
 
