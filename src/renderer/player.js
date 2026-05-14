@@ -530,10 +530,20 @@ function loadVideo() {
         document.getElementById('htmlContentContainer').style.display = 'none';
         document.getElementById('controlsBar').style.display = 'flex';
         
-        const videoPath = '../' + videoData.file;
-        video.src = videoPath;
-        video.load();
+        const videoPath = '/' + videoData.file;
+        const videoEl = document.getElementById('videoPlayer');
+        videoEl.src = videoPath;
+        videoEl.addEventListener('error', () => {
+        console.error('[CourseMera] Video error:', videoEl.error, '| src:', videoEl.src);
+    });
+    videoEl.addEventListener('loadedmetadata', () => {
+        console.log('[CourseMera] Video metadata: duration=' + videoEl.duration + 's');
+    });
+        console.log('[CourseMera] Loading video:', videoPath, '| Full URL:', window.location.origin + videoPath);
     }
+    
+    updateStickyFooter();
+}
     
     updateStickyFooter();
 }
