@@ -532,18 +532,16 @@ function loadVideo() {
         
         const videoPath = '/' + videoData.file;
         const videoEl = document.getElementById('videoPlayer');
-        videoEl.src = videoPath;
         videoEl.addEventListener('error', () => {
-        console.error('[CourseMera] Video error:', videoEl.error, '| src:', videoEl.src);
-    });
-    videoEl.addEventListener('loadedmetadata', () => {
-        console.log('[CourseMera] Video metadata: duration=' + videoEl.duration + 's');
-    });
+            console.error('[CourseMera] Video error:', videoEl.error, '| src:', videoEl.src);
+        });
+        videoEl.addEventListener('loadedmetadata', () => {
+            console.log('[CourseMera] Video metadata: duration=' + videoEl.duration + 's');
+        });
+        videoEl.src = videoPath;
+        videoEl.load();
         console.log('[CourseMera] Loading video:', videoPath, '| Full URL:', window.location.origin + videoPath);
     }
-    
-    updateStickyFooter();
-}
     
     updateStickyFooter();
 }
