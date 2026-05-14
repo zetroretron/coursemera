@@ -41,6 +41,18 @@ function loadCourseFromUrl() {
             }
             const course = courses.find(c => c.id === courseId);
             if (!course) {
+                if (courses.length > 0) {
+                    document.getElementById('courseHeader').innerHTML = `
+                        <div style="padding:40px;text-align:center">
+                            <h2>Course not found</h2>
+                            <p>The course "${courseId}" was not found in the scanned courses.</p>
+                            <p>Try <a href="index.html" style="color:var(--accent)">rescanning the folder</a> from the home screen.</p>
+                        </div>
+                    `;
+                    document.getElementById('courseProgress').style.display = 'none';
+                    document.getElementById('courseSections').innerHTML = '';
+                    return;
+                }
                 window.location.href = 'index.html';
                 return;
             }
@@ -51,6 +63,18 @@ function loadCourseFromUrl() {
             renderCourse();
         })
         .catch(() => {
+            const local = localStorage.getItem('coursesData');
+            if (local) {
+                const courses = JSON.parse(local);
+                const course = courses.find(c => c.id === courseId);
+                if (course) {
+                    currentCourse = course;
+                    loadProgress();
+                    saveRecentCourse(courseId);
+                    renderCourse();
+                    return;
+                }
+            }
             window.location.href = 'index.html';
         });
 }

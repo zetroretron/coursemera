@@ -72,8 +72,46 @@ function renderRecentCourses() {
 async function checkSavedFolder() {
     const folder = await window.courseMera.getFolder();
     if (folder) {
-        document.getElementById('folderPath').textContent = folder;
+        localStorage.setItem('coursesFolder', folder);
+        updateFolderBar(folder);
         loadCourses();
+    } else {
+        updateFolderBar(null);
+    }
+}
+
+function updateFolderBar(folder) {
+    const icon = document.getElementById('folderBarIcon');
+    const pathEl = document.getElementById('folderBarPath');
+    const meta = document.getElementById('folderBarMeta');
+    
+    if (!folder) {
+        icon.textContent = '📁';
+        pathEl.textContent = 'No folder selected';
+        pathEl.title = 'Select a folder to get started';
+        meta.textContent = '';
+        return;
+    }
+    
+    icon.textContent = '📂';
+    pathEl.textContent = folder;
+    pathEl.title = 'Click to change folder';
+    
+    const lastScanned = localStorage.getItem('lastScanned');
+    if (lastScanned) {
+        const date = new Date(lastScanned);
+        const timeStr = date.toLocaleString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+        meta.textContent = `• ${courses.length} courses • Scanned ${timeStr}`;
+    }
+}
+
+function updateFolderBarMeta(count) {
+    const meta = document.getElementById('folderBarMeta');
+    if (count > 0) {
+        const date = new Date();
+        localStorage.setItem('lastScanned', date.toISOString());
+        const timeStr = date.toLocaleString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+        meta.textContent = `• ${count} courses • Scanned ${timeStr}`;
     }
 }
 
@@ -82,6 +120,10 @@ function loadCourses() {
         .then(r => r.json())
         .then(data => {
             courses = data.courses || [];
+            if (courses.length === 0) {
+                const local = localStorage.getItem('coursesData');
+                if (local) courses = JSON.parse(local);
+            }
             if (courses.length > 0) {
                 showCoursesView();
             }
@@ -89,10 +131,21 @@ function loadCourses() {
             updateStats();
             filterCourses();
             renderRecentCourses();
+            
+            const savedFolder = localStorage.getItem('coursesFolder');
+            if (savedFolder) updateFolderBar(savedFolder);
         })
         .catch(() => {
-            courses = [];
-            filteredCourses = [];
+            const local = localStorage.getItem('coursesData');
+            if (local) courses = JSON.parse(local);
+            if (courses.length > 0) showCoursesView();
+            filteredCourses = [...courses];
+            updateStats();
+            filterCourses();
+            renderRecentCourses();
+            
+            const savedFolder = localStorage.getItem('coursesFolder');
+            if (savedFolder) updateFolderBar(savedFolder);
         });
 }
 
@@ -100,6 +153,7 @@ function showCoursesView() {
     document.getElementById('folderSection').style.display = 'none';
     document.getElementById('stats').style.display = 'flex';
     document.getElementById('filtersSection').style.display = 'flex';
+    document.getElementById('recentSection').style.display = 'block';
 }
 
 function updateStats() {
@@ -136,9 +190,9 @@ function setupEventListeners() {
 async function selectFolder() {
     const folder = await window.courseMera.selectFolder();
     if (folder) {
-        document.getElementById('folderPath').textContent = folder;
+        localStorage.setItem('coursesFolder', folder);
+        updateFolderBar(folder);
         showCoursesView();
-        rescanCourses();
     }
 }
 
@@ -257,6 +311,7 @@ async function rescanCourses() {
         
         courses = result.courses || [];
         localStorage.setItem('coursesData', JSON.stringify(courses));
+        updateFolderBarMeta(courses.length);
         filteredCourses = [...courses];
         showCoursesView();
         updateStats();
@@ -276,3 +331,6 @@ async function rescanCourses() {
 }
 
 document.addEventListener('DOMContentLoaded', init);
+
+window.selectFolder = selectFolder;
+window.rescanCourses = rescanCourses;

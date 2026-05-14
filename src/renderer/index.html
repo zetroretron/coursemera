@@ -19,6 +19,17 @@
             <button id="themeToggle" class="icon-btn" title="Toggle theme">🌙</button>
             <button id="rescanBtn" class="icon-btn" title="Rescan courses">🔄</button>
         </div>
+    <div id="folderBar" class="folder-bar">
+            <div class="folder-bar-left">
+                <span id="folderBarIcon">📁</span>
+                <span id="folderBarPath" class="folder-bar-path" title="Click to change folder" onclick="selectFolder()">No folder selected</span>
+                <span id="folderBarMeta" class="folder-bar-meta"></span>
+            </div>
+            <div class="folder-bar-right">
+                <button id="folderChangeBtn" class="folder-btn" onclick="selectFolder()" title="Change folder">📂 Change</button>
+                <button id="folderRescanBtn" class="folder-btn" onclick="rescanCourses()" title="Rescan folder">↻</button>
+            </div>
+        </div>
     </header>
 
     <main>

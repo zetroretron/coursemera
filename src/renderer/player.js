@@ -39,8 +39,23 @@ function loadPlayerFromUrl() {
     fetch('/data/courses.json')
         .then(r => r.json())
         .then(data => {
-            const course = data.courses.find(c => c.id === courseId);
+            let courses = data.courses || [];
+            if (courses.length === 0) {
+                const local = localStorage.getItem('coursesData');
+                if (local) courses = JSON.parse(local);
+            }
+            const course = courses.find(c => c.id === courseId);
             if (!course) {
+                if (courses.length > 0) {
+                    document.body.innerHTML = `
+                        <div style="padding:40px;text-align:center;font-family:sans-serif">
+                            <h2>Course not found</h2>
+                            <p>The course "${courseId}" was not found in the scanned courses.</p>
+                            <p>Try <a href="index.html" style="color:#58a6ff">rescanning the folder</a> from the home screen.</p>
+                        </div>
+                    `;
+                    return;
+                }
                 window.location.href = 'index.html';
                 return;
             }
@@ -56,6 +71,22 @@ function loadPlayerFromUrl() {
             updateStickyFooter();
         })
         .catch(() => {
+            const local = localStorage.getItem('coursesData');
+            if (local) {
+                const courses = JSON.parse(local);
+                const course = courses.find(c => c.id === courseId);
+                if (course) {
+                    currentCourse = course;
+                    currentSection = sectionIdx;
+                    currentVideo = videoIdx;
+                    saveRecentCourse(courseId);
+                    setupPlayer();
+                    renderSidebar();
+                    loadVideo();
+                    updateStickyFooter();
+                    return;
+                }
+            }
             window.location.href = 'index.html';
         });
 }

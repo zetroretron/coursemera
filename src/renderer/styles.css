@@ -5,6 +5,7 @@
     --bg-hover: #30363d;
     --text-primary: #e6edf3;
     --text-secondary: #8b949e;
+    --text-muted: #6e7681;
     --border: #30363d;
     --accent: #0f93ff;
     --accent-hover: #1a9fff;
@@ -26,6 +27,7 @@
     --bg-hover: #f0f0f0;
     --text-primary: #2c3e50;
     --text-secondary: #6c757d;
+    --text-muted: #adb5bd;
     --border: #dee2e6;
     --accent: #0d96ff;
     --accent-hover: #0095ff;
@@ -257,3 +259,59 @@ kbd { background: var(--bg-hover); padding: 0.25rem 0.5rem; border-radius: 4px; 
 ::-webkit-scrollbar-track { background: var(--bg-secondary); }
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--text-secondary); }
+
+/* Folder Bar */
+.folder-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 20px;
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+    gap: 12px;
+}
+.folder-bar-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    flex: 1;
+}
+.folder-bar-path {
+    cursor: pointer;
+    color: var(--text-secondary);
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 500px;
+}
+.folder-bar-path:hover {
+    color: var(--accent);
+    text-decoration: underline;
+}
+.folder-bar-meta {
+    color: var(--text-muted);
+    white-space: nowrap;
+}
+.folder-bar-right {
+    display: flex;
+    gap: 6px;
+    flex-shrink: 0;
+}
+.folder-btn {
+    padding: 4px 10px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--bg-card);
+    color: var(--text-primary);
+    cursor: pointer;
+    font-size: 12px;
+    font-family: var(--font-family);
+    transition: background 0.15s, border-color 0.15s;
+}
+.folder-btn:hover {
+    background: var(--bg-hover);
+    border-color: var(--accent);
+}
