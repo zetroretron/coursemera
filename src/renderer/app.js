@@ -249,39 +249,20 @@ async function rescanCourses() {
     try {
         const result = await window.courseMera.scanCourses();
         if (result.error) {
-            console.error('Scan error:', result.error);
+            alert('Scan failed: ' + result.error);
             btn.textContent = '🔄';
             btn.disabled = false;
             return;
         }
         
-        const coursesData = { courses: result.courses, lastScanned: new Date().toISOString() };
+        courses = result.courses || [];
+        localStorage.setItem('coursesData', JSON.stringify(courses));
+        filteredCourses = [...courses];
+        showCoursesView();
+        updateStats();
+        filterCourses();
+        renderRecentCourses();
         
-        const response = await fetch('/data/courses.json');
-        const existing = await response.json();
-        
-        for (const course of result.courses) {
-            for (const existingCourse of existing.courses) {
-                if (course.id === existingCourse.id) {
-                    for (let i = 0; i < course.sections.length; i++) {
-                        for (let j = 0; j < course.sections[i].videos.length; j++) {
-                            const existingSection = existingCourse.sections.find(s => s.name === course.sections[i].name);
-                            if (existingSection) {
-                                const existingVideo = existingSection.videos.find(v => v.file === course.sections[i].videos[j].file);
-                                if (existingVideo) {
-                                    course.sections[i].videos[j] = existingVideo;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        
-        const blob = new Blob([JSON.stringify(coursesData, null, 2)], { type: 'application/json' });
-        const fs = require ? require : null;
-        
-        loadCourses();
         btn.textContent = '✓';
         setTimeout(() => {
             btn.textContent = '🔄';

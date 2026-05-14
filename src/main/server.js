@@ -4,8 +4,8 @@ const fs = require('fs');
 
 let server = null;
 let currentPort = null;
+let coursesFolder = null;
 const BASE_DIR = path.join(__dirname, '..', 'renderer');
-const coursesFolder = null;
 
 function start(callback) {
     const app = express();
@@ -13,11 +13,16 @@ function start(callback) {
     app.use(express.static(BASE_DIR));
     
     app.get('/data/courses.json', (req, res) => {
-        const filePath = path.join(BASE_DIR, 'data', 'courses.json');
-        if (fs.existsSync(filePath)) {
-            res.json(JSON.parse(fs.readFileSync(filePath, 'utf-8')));
+        const appDataPath = path.join(require('electron').app.getPath('userData'), 'courses.json');
+        if (fs.existsSync(appDataPath)) {
+            res.json(JSON.parse(fs.readFileSync(appDataPath, 'utf-8')));
         } else {
-            res.json({ courses: [] });
+            const packagedPath = path.join(BASE_DIR, 'data', 'courses.json');
+            if (fs.existsSync(packagedPath)) {
+                res.json(JSON.parse(fs.readFileSync(packagedPath, 'utf-8')));
+            } else {
+                res.json({ courses: [] });
+            }
         }
     });
     
@@ -32,8 +37,10 @@ function start(callback) {
         const ext = path.extname(filePath).toLowerCase();
         let fullPath = path.join(BASE_DIR, filePath);
         
-        if (!fs.existsSync(fullPath)) {
-            if (ext === '.mp4' || ext === '.srt' || ext === '.zip') {
+        if (!fs.existsSync(fullPath) && ext === '.mp4') {
+            if (coursesFolder) {
+                fullPath = path.join(coursesFolder, decodeURIComponent(filePath.replace(/^\/+/, '')));
+            } else {
                 const parentDir = path.join(__dirname, '..', '..', '..');
                 fullPath = path.join(parentDir, decodeURIComponent(filePath.replace(/^\/+/, '')));
             }
@@ -91,4 +98,8 @@ function getPort() {
     return currentPort;
 }
 
-module.exports = { start, stop, getPort };
+function setCoursesFolder(folder) {
+    coursesFolder = folder;
+}
+
+module.exports = { start, stop, getPort, setCoursesFolder };

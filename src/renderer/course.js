@@ -34,7 +34,12 @@ function loadCourseFromUrl() {
     fetch('/data/courses.json')
         .then(r => r.json())
         .then(data => {
-            const course = data.courses.find(c => c.id === courseId);
+            let courses = data.courses || [];
+            if (courses.length === 0) {
+                const local = localStorage.getItem('coursesData');
+                if (local) courses = JSON.parse(local);
+            }
+            const course = courses.find(c => c.id === courseId);
             if (!course) {
                 window.location.href = 'index.html';
                 return;

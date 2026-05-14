@@ -82,6 +82,10 @@ async function initializeApp() {
         
         coursesFolder = config.coursesFolder || null;
         
+        if (coursesFolder) {
+            server.setCoursesFolder(coursesFolder);
+        }
+        
         const port = await startServer();
         
         createMainWindow();
@@ -121,6 +125,7 @@ ipcMain.handle('get-folder', () => coursesFolder);
 
 ipcMain.handle('set-folder', (event, folder) => {
     coursesFolder = folder;
+    server.setCoursesFolder(folder);
     saveConfig();
     return true;
 });
@@ -132,6 +137,10 @@ ipcMain.handle('scan-courses', async () => {
     
     try {
         const courses = await scanner.scanCourses(coursesFolder);
+        const dataPath = path.join(app.getPath('userData'), 'courses.json');
+        const data = { courses, lastScanned: new Date().toISOString() };
+        fs.writeFileSync(dataPath, JSON.stringify(data, null, 2));
+        logger.info(`Saved ${courses.length} courses to ${dataPath}`);
         return { success: true, courses };
     } catch (error) {
         logger.error('Scan error:', error);

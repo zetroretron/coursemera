@@ -64,7 +64,7 @@ async function scanCourses(coursesPath) {
     const courses = [];
     
     for (const entry of entries) {
-        if (entry.isDirectory() && entry.name.startsWith('ZeroToMastery')) {
+        if (entry.isDirectory()) {
             console.log(`Scanning: ${entry.name}`);
             try {
                 const course = await scanCourse(path.join(coursesPath, entry.name), entry.name);
