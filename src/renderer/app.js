@@ -57,16 +57,23 @@ function renderRecentCourses() {
     }
     
     section.style.display = 'block';
-    ribbon.innerHTML = recentData.map(course => `
+    const progress = JSON.parse(localStorage.getItem('progress') || '{}');
+
+    ribbon.innerHTML = recentData.map(course => {
+        const courseProgress = progress[course.id];
+        const watchedCount = courseProgress?.watched?.length || 0;
+        const percent = course.totalVideos > 0 ? Math.round((watchedCount / course.totalVideos) * 100) : 0;
+        
+        return `
         <div class="recent-card" onclick="location.href='course.html?id=${course.id}'">
             <img src="${course.thumbnail}" alt="${course.title}" loading="lazy">
             <div class="recent-card-info">
                 <span class="recent-card-title">${course.title}</span>
-                <span class="recent-card-meta">${course.totalVideos} videos</span>
+                <span class="recent-card-meta">${course.totalVideos} videos • ${percent}% completed</span>
             </div>
             <button class="continue-btn">▶</button>
         </div>
-    `).join('');
+    `}).join('');
 }
 
 async function checkSavedFolder() {

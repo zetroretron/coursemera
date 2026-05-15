@@ -135,9 +135,14 @@ function setupPlayer() {
             }, 250);
         }
     });
-    overlay.addEventListener('click', () => togglePlay());
-    playBtn.addEventListener('click', () => togglePlay());
-    playBtnLarge.addEventListener('click', () => togglePlay());
+    
+    // Double click for fullscreen
+    video.addEventListener('dblclick', () => {
+        toggleFullscreen();
+    });
+
+    // NOTE: playBtn and playBtnLarge click listeners are bound in setupControls()
+    // to prevent duplicate firing that immediately pauses the video again.
 
     const wrapper = document.getElementById('videoWrapper');
 
@@ -227,7 +232,12 @@ function setupControls() {
     const progressArea = document.getElementById('progressContainer');
     const timeTooltip = document.getElementById('timeTooltip');
 
-    playBtn.addEventListener('click', () => togglePlay());
+    playBtn.addEventListener('click', (e) => { e.stopPropagation(); togglePlay(); });
+    const playBtnLarge = document.getElementById('playBtnLarge');
+    if (playBtnLarge) {
+        playBtnLarge.addEventListener('click', (e) => { e.stopPropagation(); togglePlay(); });
+    }
+    
     rewindBtn.addEventListener('click', () => seek(-10));
     forwardBtn.addEventListener('click', () => seek(10));
 

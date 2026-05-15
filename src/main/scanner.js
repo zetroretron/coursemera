@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const getDuration = require('get-video-duration').getVideoDuration;
+const getDuration = require('get-video-duration').getVideoDurationInSeconds;
 const logger = require('./logger');
 
 const CATEGORIES = {
