@@ -64,6 +64,50 @@ function parseHtmlLesson(filePath) {
     return { title: 'Lesson', content: '' };
 }
 
+async function processVideoFile(parentPath, fileName, courseFolderName, sectionName) {
+    const filePath = path.join(parentPath, fileName);
+    const ext = path.extname(fileName).toLowerCase();
+    
+    if (ext === '.mp4') {
+        const duration = await getVideoDurationSafe(filePath);
+        return {
+            duration: duration,
+            video: {
+                name: fileName.replace(/\.mp4$/i, '').replace(/^\d+[\.\s-]*/, '').trim(),
+                file: path.join(courseFolderName, sectionName, fileName),
+                duration: duration || '--:--',
+                type: 'video'
+            }
+        };
+    } else if (ext === '.html') {
+        const parsed = parseHtmlLesson(filePath);
+        return {
+            duration: null,
+            video: {
+                name: parsed.title,
+                file: path.join(courseFolderName, sectionName, fileName),
+                duration: 'text',
+                type: 'html',
+                content: parsed.content
+            }
+        };
+    }
+    return null;
+}
+
+function addDuration(total, durationStr) {
+    if (!durationStr) return;
+    const parts = durationStr.split(':').map(Number);
+    if (parts.length === 3) {
+        total.hours += parts[0];
+        total.minutes += parts[1];
+        total.seconds += parts[2];
+    } else if (parts.length === 2) {
+        total.minutes += parts[0];
+        total.seconds += parts[1];
+    }
+}
+
 async function scanCourses(coursesPath) {
     logger.info('Scanning courses from:', coursesPath);
     
@@ -92,7 +136,8 @@ async function scanCourses(coursesPath) {
 }
 
 async function scanCourse(folderPath, folderName) {
-    const title = folderName.replace(/^ZeroToMastery\s*-\s*/i, '').replace(/\s*\(\d+\.\d+\)$/, '').trim();
+    // Generic title cleaning: remove common prefixes/suffixes but keep the name clean
+    const title = folderName.replace(/^\d+[\.\s-]*/, '').replace(/\s*\(\d+\.\d+\)$/, '').trim();
     const courseId = generateId(folderName);
     const category = getCategory(title);
     const thumbnail = `https://picsum.photos/seed/${courseId}/400/225`;
@@ -103,48 +148,40 @@ async function scanCourse(folderPath, folderName) {
     
     const entries = fs.readdirSync(folderPath, { withFileTypes: true });
     
+    // 1. Handle direct files in course root (no sections)
+    const rootVideos = [];
+    for (const entry of entries) {
+        if (entry.isFile()) {
+            const result = await processVideoFile(folderPath, entry.name, folderName, '');
+            if (result) {
+                rootVideos.push(result.video);
+                addDuration(totalDuration, result.duration);
+                totalVideos++;
+            }
+        }
+    }
+    
+    if (rootVideos.length > 0) {
+        sections.push({
+            name: 'Contents',
+            videos: rootVideos
+        });
+    }
+
+    // 2. Handle subdirectories as sections
     for (const entry of entries) {
         if (entry.isDirectory()) {
-            const sectionName = entry.name.replace(/^\d+\.\s*/, '');
+            const sectionName = entry.name.replace(/^\d+[\.\s-]*/, '');
             const sectionPath = path.join(folderPath, entry.name);
             const videos = [];
             
             const sectionFiles = fs.readdirSync(sectionPath);
             
             for (const file of sectionFiles.sort()) {
-                const filePath = path.join(sectionPath, file);
-                
-                if (file.toLowerCase().endsWith('.mp4')) {
-                    const duration = await getVideoDurationSafe(filePath);
-                    if (duration) {
-                        const parts = duration.split(':').map(Number);
-                        if (parts.length === 3) {
-                            totalDuration.hours += parts[0];
-                            totalDuration.minutes += parts[1];
-                            totalDuration.seconds += parts[2];
-                        } else if (parts.length === 2) {
-                            totalDuration.minutes += parts[0];
-                            totalDuration.seconds += parts[1];
-                        }
-                    }
-                    
-                    videos.push({
-                        name: file.replace(/\.mp4$/i, '').replace(/^\d+[\.\s]*/, '').trim(),
-                        file: path.join(folderName, entry.name, file),
-                        duration: duration || '--:--',
-                        type: 'video'
-                    });
-                    totalVideos++;
-                }
-                else if (file.toLowerCase().endsWith('.html')) {
-                    const parsed = parseHtmlLesson(filePath);
-                    videos.push({
-                        name: parsed.title,
-                        file: path.join(folderName, entry.name, file),
-                        duration: 'text',
-                        type: 'html',
-                        content: parsed.content
-                    });
+                const result = await processVideoFile(sectionPath, file, folderName, entry.name);
+                if (result) {
+                    videos.push(result.video);
+                    addDuration(totalDuration, result.duration);
                     totalVideos++;
                 }
             }
