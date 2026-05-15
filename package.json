@@ -1,11 +1,11 @@
 {
   "name": "coursemera",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A beautiful desktop learning platform for video courses",
   "main": "src/main/main.js",
   "scripts": {
     "dev": "electron .",
-    "build:win": "electron-builder --win",
+    "build:win": "electron-builder --win -p always",
     "build:mac": "electron-builder --mac",
     "build:linux": "electron-builder --linux"
   },
@@ -13,7 +13,9 @@
   "license": "MIT",
   "devDependencies": {
     "electron": "^28.0.0",
-    "electron-builder": "^24.9.1"
+    "electron-builder": "^24.9.1",
+    "png-to-ico": "^3.0.1",
+    "sharp": "^0.34.5"
   },
   "dependencies": {
     "electron-log": "^5.0.3",
@@ -30,28 +32,39 @@
     },
     "files": [
       "src/**/*",
-      "sample-courses/**/*"
+      "sample-courses/**/*",
+      "assets/**/*"
     ],
     "extraResources": [
       {
         "from": "sample-courses",
         "to": "sample-courses"
+      },
+      {
+        "from": "assets",
+        "to": "assets"
       }
     ],
     "win": {
       "target": [
         {
-          "target": "dir",
-          "arch": ["x64"]
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
         }
       ],
-      "artifactName": "CourseMera.exe"
+      "icon": "assets/icon.ico",
+      "artifactName": "${productName}-${version}-${arch}.${ext}"
     },
     "mac": {
       "target": [
         {
           "target": "dmg",
-          "arch": ["x64", "arm64"]
+          "arch": [
+            "x64",
+            "arm64"
+          ]
         }
       ],
       "icon": "assets/icon.icns",

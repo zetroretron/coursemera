@@ -1,5 +1,4 @@
 const log = require('electron-log');
-const path = require('path');
 
 log.transports.file.level = 'info';
 log.transports.console.level = 'info';

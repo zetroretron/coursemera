@@ -6,9 +6,12 @@ const server = require('./server');
 const scanner = require('./scanner');
 const updater = require('./updater');
 
+const ICON_PATH = app.isPackaged
+    ? path.join(process.resourcesPath, 'assets', 'icon.ico')
+    : path.join(__dirname, '..', '..', 'assets', 'icon.ico');
+
 let mainWindow = null;
 let coursesFolder = null;
-let serverInstance = null;
 
 const gotTheLock = app.requestSingleInstanceLock();
 if (!gotTheLock) {
@@ -31,7 +34,7 @@ process.on('unhandledRejection', (reason, promise) => {
     logger.error('Unhandled Rejection at:', promise, 'reason:', reason);
 });
 
-function createMainWindow() {
+function createMainWindow(port) {
     logger.info('Creating main window...');
     
     mainWindow = new BrowserWindow({
@@ -40,6 +43,7 @@ function createMainWindow() {
         minWidth: 1000,
         minHeight: 700,
         backgroundColor: '#0d1117',
+        icon: ICON_PATH,
         webPreferences: {
             nodeIntegration: false,
             contextIsolation: true,
@@ -48,7 +52,7 @@ function createMainWindow() {
         show: false
     });
 
-    mainWindow.loadURL('http://localhost:3000');
+    mainWindow.loadURL(`http://localhost:${port}`);
 
     mainWindow.once('ready-to-show', () => {
         mainWindow.show();
@@ -88,8 +92,9 @@ async function initializeApp() {
         
         const port = await startServer();
         
-        createMainWindow();
+        createMainWindow(port);
         
+        updater.init();
         if (!app.isPackaged) {
             logger.info('Skip checkForUpdates because application is not packed and dev update config is not forced');
         }
@@ -115,6 +120,7 @@ ipcMain.handle('select-folder', async () => {
     
     if (!result.canceled && result.filePaths.length > 0) {
         coursesFolder = result.filePaths[0];
+        server.setCoursesFolder(coursesFolder);
         saveConfig();
         return coursesFolder;
     }
@@ -158,20 +164,20 @@ ipcMain.handle('check-updates', async () => {
 
 ipcMain.handle('get-version', () => app.getVersion());
 
+ipcMain.handle('install-update', () => {
+    updater.quitAndInstall();
+});
+
 app.whenReady().then(initializeApp);
 
 app.on('window-all-closed', () => {
     logger.info('All windows closed');
-    if (serverInstance) {
-        server.stop();
-    }
+    server.stop();
     app.quit();
 });
 
 app.on('before-quit', () => {
     logger.info('App quitting...');
-    if (serverInstance) {
-        server.stop();
-        logger.info('Server stopped');
-    }
+    server.stop();
+    logger.info('Server stopped');
 });

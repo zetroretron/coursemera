@@ -35,15 +35,24 @@ function start(callback) {
         }
         
         const ext = path.extname(filePath).toLowerCase();
-        let fullPath = path.join(BASE_DIR, filePath);
+        let fullPath = path.resolve(BASE_DIR, filePath.replace(/^\/+/, ''));
         
         if (!fs.existsSync(fullPath) && ext === '.mp4') {
             if (coursesFolder) {
-                fullPath = path.join(coursesFolder, decodeURIComponent(filePath.replace(/^\/+/, '')));
+                fullPath = path.resolve(coursesFolder, filePath.replace(/^\/+/, ''));
             } else {
                 const parentDir = path.join(__dirname, '..', '..', '..');
-                fullPath = path.join(parentDir, decodeURIComponent(filePath.replace(/^\/+/, '')));
+                fullPath = path.resolve(parentDir, filePath.replace(/^\/+/, ''));
             }
+        }
+        
+        // Path traversal protection: ensure resolved path is within allowed directories
+        const resolvedPath = path.resolve(fullPath);
+        const isInBaseDir = resolvedPath.startsWith(path.resolve(BASE_DIR));
+        const isInCoursesFolder = coursesFolder && resolvedPath.startsWith(path.resolve(coursesFolder));
+        
+        if (!isInBaseDir && !isInCoursesFolder) {
+            return res.status(403).send('Forbidden: path outside allowed directories');
         }
         
         if (fs.existsSync(fullPath)) {

@@ -116,36 +116,29 @@ function updateFolderBarMeta(count) {
 }
 
 function loadCourses() {
-    fetch('/data/courses.json')
-        .then(r => r.json())
-        .then(data => {
-            courses = data.courses || [];
-            if (courses.length === 0) {
-                const local = localStorage.getItem('coursesData');
-                if (local) courses = JSON.parse(local);
-            }
-            if (courses.length > 0) {
-                showCoursesView();
-            }
-            filteredCourses = [...courses];
-            updateStats();
-            filterCourses();
-            renderRecentCourses();
-            
-            const savedFolder = localStorage.getItem('coursesFolder');
-            if (savedFolder) updateFolderBar(savedFolder);
-        })
-        .catch(() => {
+    const processCourseData = (data) => {
+        courses = data.courses || [];
+        if (courses.length === 0) {
             const local = localStorage.getItem('coursesData');
             if (local) courses = JSON.parse(local);
-            if (courses.length > 0) showCoursesView();
-            filteredCourses = [...courses];
-            updateStats();
-            filterCourses();
-            renderRecentCourses();
-            
-            const savedFolder = localStorage.getItem('coursesFolder');
-            if (savedFolder) updateFolderBar(savedFolder);
+        }
+        if (courses.length > 0) {
+            showCoursesView();
+        }
+        filteredCourses = [...courses];
+        updateStats();
+        filterCourses();
+        renderRecentCourses();
+        
+        const savedFolder = localStorage.getItem('coursesFolder');
+        if (savedFolder) updateFolderBar(savedFolder);
+    };
+
+    fetch('/data/courses.json')
+        .then(r => r.json())
+        .then(processCourseData)
+        .catch(() => {
+            processCourseData({ courses: [] });
         });
 }
 
@@ -153,7 +146,7 @@ function showCoursesView() {
     document.getElementById('folderSection').style.display = 'none';
     document.getElementById('stats').style.display = 'flex';
     document.getElementById('filtersSection').style.display = 'flex';
-    document.getElementById('recentSection').style.display = 'block';
+    // recentSection visibility is controlled by renderRecentCourses()
 }
 
 function updateStats() {

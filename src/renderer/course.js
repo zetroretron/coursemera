@@ -61,6 +61,7 @@ function loadCourseFromUrl() {
             loadProgress();
             saveRecentCourse(courseId);
             renderCourse();
+            document.title = `${course.title} - CourseMera`;
         })
         .catch(() => {
             const local = localStorage.getItem('coursesData');
@@ -72,6 +73,7 @@ function loadCourseFromUrl() {
                     loadProgress();
                     saveRecentCourse(courseId);
                     renderCourse();
+                    document.title = `${course.title} - CourseMera`;
                     return;
                 }
             }
@@ -208,10 +210,6 @@ function getCategoryName(category) {
 
 function setupEventListeners() {
     document.getElementById('themeToggle').addEventListener('click', toggleTheme);
-    
-    document.querySelectorAll('.section-header').forEach((header, idx) => {
-        expandedSections[idx] = false;
-    });
 }
 
 document.addEventListener('DOMContentLoaded', init);

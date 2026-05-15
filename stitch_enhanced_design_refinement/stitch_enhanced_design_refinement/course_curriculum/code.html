@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>CourseMera | Course Details</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        @import url('https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap');
+        
+        body {
+            font-family: 'Geist', sans-serif;
+            background-color: #0b1326;
+            color: #d4e4fa;
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        .glass-panel {
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .course-hero-gradient {
+            background: linear-gradient(180deg, rgba(11, 19, 38, 0.4) 0%, rgba(11, 19, 38, 1) 100%);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-3": "#2d3a54",
+                      "on-primary-fixed": "#001a42",
+                      "outline-variant": "#424754",
+                      "outline": "#8c909f",
+                      "inverse-primary": "#005ac2",
+                      "on-surface-variant": "#c2c6d6",
+                      "tertiary-fixed": "#d4e3ff",
+                      "background": "#0b1326",
+                      "warning": "#f59e0b",
+                      "secondary-fixed-dim": "#bcc7de",
+                      "tertiary": "#a4c9ff",
+                      "on-secondary": "#263143",
+                      "on-primary-container": "#00285d",
+                      "surface-container-highest": "#273647",
+                      "surface-container-high": "#1c2b3c",
+                      "on-primary": "#002e6a",
+                      "surface-dim": "#051424",
+                      "surface-container-low": "#0d1c2d",
+                      "surface-variant": "#273647",
+                      "secondary-fixed": "#d8e3fb",
+                      "error-container": "#93000a",
+                      "surface": "#051424",
+                      "tertiary-container": "#4c93e7",
+                      "surface-container": "#122131",
+                      "surface-1": "#161e31",
+                      "on-tertiary-container": "#002a51",
+                      "on-tertiary": "#00315d",
+                      "on-secondary-fixed-variant": "#3c475a",
+                      "inverse-on-surface": "#233143",
+                      "secondary": "#bcc7de",
+                      "on-surface": "#d4e4fa",
+                      "on-secondary-fixed": "#111c2d",
+                      "on-secondary-container": "#aeb9d0",
+                      "secondary-container": "#3e495d",
+                      "on-primary-fixed-variant": "#004395",
+                      "on-error-container": "#ffdad6",
+                      "error": "#ef4444",
+                      "inverse-surface": "#d4e4fa",
+                      "tertiary-fixed-dim": "#a4c9ff",
+                      "primary-fixed": "#d8e2ff",
+                      "on-tertiary-fixed": "#001c39",
+                      "on-background": "#d4e4fa",
+                      "surface-bright": "#2c3a4c",
+                      "primary-fixed-dim": "#adc6ff",
+                      "success": "#10b981",
+                      "primary-container": "#4d8eff",
+                      "on-error": "#690005",
+                      "primary": "#adc6ff",
+                      "on-tertiary-fixed-variant": "#004883",
+                      "surface-container-lowest": "#010f1f",
+                      "surface-2": "#1f2942",
+                      "surface-tint": "#adc6ff"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "stack-lg": "32px",
+                      "stack-sm": "8px",
+                      "margin-edge": "40px",
+                      "container-max": "1440px",
+                      "base": "8px",
+                      "stack-md": "16px",
+                      "gutter": "24px"
+              },
+              "fontFamily": {
+                      "label-md": ["Geist"],
+                      "body-lg": ["Geist"],
+                      "body-md": ["Geist"],
+                      "label-sm": ["Geist"],
+                      "headline-lg": ["Geist"],
+                      "headline-md": ["Geist"],
+                      "headline-xl": ["Geist"],
+                      "body-sm": ["Geist"]
+              },
+              "fontSize": {
+                      "label-md": ["14px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                      "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                      "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "label-sm": ["12px", {"lineHeight": "14px", "fontWeight": "500"}],
+                      "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                      "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                      "headline-xl": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
+              }
+            },
+          },
+        }
+      </script>
+</head>
+<body class="bg-background text-on-background min-h-screen">
+<!-- TopNavBar Component -->
+<nav class="bg-surface sticky top-0 z-40 w-full h-16 border-b border-outline-variant">
+<div class="flex justify-between items-center px-gutter max-w-container-max mx-auto h-full">
+<div class="flex items-center gap-stack-lg">
+<span class="font-headline-md text-headline-md font-bold text-primary cursor-pointer">CourseMera</span>
+<div class="hidden md:flex items-center gap-gutter">
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors cursor-pointer" href="#">Browse</a>
+<a class="font-body-md text-body-md text-primary font-bold border-b-2 border-primary pb-1 cursor-pointer" href="#">My Learning</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors cursor-pointer" href="#">Resources</a>
+</div>
+</div>
+<div class="flex items-center gap-stack-md">
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer active:opacity-80">notifications</span>
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer active:opacity-80">help</span>
+<div class="w-8 h-8 rounded-full overflow-hidden border border-outline-variant cursor-pointer">
+<img alt="User profile photo" data-alt="A professional headshot of a person with a warm smile, set against a soft, out-of-focus office background. The lighting is bright and even, highlighting clear skin and sharp features. The overall style is clean, corporate, and trustworthy, matching a modern digital learning platform's sophisticated aesthetic. The color palette features natural skin tones and subtle blues." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAlmQbLjbGThETxSGwIlW32dgRNM3EBV6Ex5VWzdoYSkv0eHL4jnjx8WZQ96bLiRI5bAw6NopgPd4klD82y5n1hqcxwtMyrsCRfEyPiC11grxyr51v1upLTlbw_4TbFii8Vl9SmrKcnf7UxTnZ9tiUBOqJV_fslL33HsrAD5kUGEXt5OEu7s8GhWBR2i0JBRkxL3_3aH64nMIKRzrgeK3LYChYTQsVl_ht6fMMDbq_WmYbPob2yvMTmGWyCyBdgqTNUXp1NKN7K9aQ"/>
+</div>
+</div>
+</div>
+</nav>
+<main class="max-w-container-max mx-auto pb-stack-lg">
+<!-- Hero Header -->
+<header class="relative w-full h-[480px] overflow-hidden">
+<img class="absolute inset-0 w-full h-full object-cover" data-alt="A cinematic, wide-angle shot of a high-tech laboratory filled with glowing blue server racks and digital interfaces. The atmosphere is intellectual and futuristic, with cool blue and deep navy tones dominating the scene. Soft ambient lighting creates a focused, professional mood. The composition is clean and expansive, reflecting the depth and advanced nature of the course content." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCzjY5nig1WtELN7LC_Y6YXXQbpu2nnDQPRV796ReZAIbGklhP_cJJPb3kjmR8lSm2GXS9c-LDnsyiNCGBgwTbH-onoo1WTfHN4lktrNEDFQuYjr5xKyM3ixQ0bKAQK0EUqHB5jHYvndS7h1676JgICC_0foJsuar2fMOrEARtfNsrckELnJu3SLs4EStnz3f3aJycasCUUVLYmUFvs7oN0oWWyUvPhpykmnuY7VaBGBaJPk7qJgVu8K_oXEeLuBVxXfz_pigjd-fg"/>
+<div class="absolute inset-0 course-hero-gradient flex flex-col justify-end px-gutter pb-stack-lg">
+<div class="max-w-4xl">
+<div class="flex gap-stack-sm mb-stack-md">
+<span class="bg-primary-container/20 text-primary px-3 py-1 rounded-full font-label-sm text-label-sm border border-primary/30">Computer Science</span>
+<span class="bg-surface-3/50 text-on-surface-variant px-3 py-1 rounded-full font-label-sm text-label-sm border border-outline-variant">Advanced Level</span>
+</div>
+<h1 class="font-headline-xl text-headline-xl text-on-surface mb-stack-sm">Advanced System Architecture &amp; Distributed Systems</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant mb-stack-md max-w-2xl">Master the complexities of modern backend engineering. Learn to scale global applications with low latency and high availability using professional-grade design patterns.</p>
+<div class="flex items-center gap-gutter text-on-surface-variant">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-warning" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="font-label-md text-label-md">4.9 (2.4k Reviews)</span>
+</div>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-primary">schedule</span>
+<span class="font-label-md text-label-md">24.5 Hours Content</span>
+</div>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-primary">language</span>
+<span class="font-label-md text-label-md">English (CC)</span>
+</div>
+</div>
+</div>
+</div>
+</header>
+<!-- Main Content 2-Column Layout -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-gutter px-gutter mt-stack-lg">
+<!-- Left Side: Curriculum -->
+<div class="md:col-span-8 space-y-stack-md">
+<div class="flex justify-between items-end mb-stack-sm">
+<h2 class="font-headline-md text-headline-md text-on-surface">Course Curriculum</h2>
+<span class="font-label-sm text-label-sm text-outline">14 Sections • 108 Lectures</span>
+</div>
+<!-- Section 1: Expanded -->
+<div class="bg-surface-1 border border-outline-variant rounded-xl overflow-hidden">
+<div class="p-stack-md flex justify-between items-center bg-surface-2/50 cursor-pointer">
+<div class="flex items-center gap-stack-md">
+<span class="material-symbols-outlined text-primary">expand_more</span>
+<div>
+<h3 class="font-label-md text-label-md text-on-surface">Section 1: Foundations of Distribution</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">4 lectures • 45 min</p>
+</div>
+</div>
+<span class="font-label-sm text-label-sm text-success">100% Completed</span>
+</div>
+<div class="divide-y divide-outline-variant/30">
+<div class="p-stack-md flex items-center justify-between hover:bg-surface-2 transition-all group">
+<div class="flex items-center gap-stack-md">
+<span class="material-symbols-outlined text-success" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="font-body-md text-body-md text-on-surface">1. Introduction to CAP Theorem</span>
+</div>
+<div class="flex items-center gap-stack-md">
+<span class="font-label-sm text-label-sm text-on-surface-variant">12:30</span>
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors cursor-pointer">play_circle</span>
+</div>
+</div>
+<div class="p-stack-md flex items-center justify-between hover:bg-surface-2 transition-all group">
+<div class="flex items-center gap-stack-md">
+<span class="material-symbols-outlined text-success" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="font-body-md text-body-md text-on-surface">2. Synchronous vs Asynchronous Communication</span>
+</div>
+<div class="flex items-center gap-stack-md">
+<span class="font-label-sm text-label-sm text-on-surface-variant">15:12</span>
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors cursor-pointer">play_circle</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Section 2: Active -->
+<div class="bg-surface-1 border border-primary/50 rounded-xl overflow-hidden">
+<div class="p-stack-md flex justify-between items-center bg-primary-container/10">
+<div class="flex items-center gap-stack-md">
+<span class="material-symbols-outlined text-primary">expand_more</span>
+<div>
+<h3 class="font-label-md text-label-md text-on-surface">Section 2: High Availability &amp; Load Balancing</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">8 lectures • 2h 15m</p>
+</div>
+</div>
+<span class="font-label-sm text-label-sm text-primary">In Progress</span>
+</div>
+<div class="divide-y divide-outline-variant/30">
+<div class="p-stack-md flex items-center justify-between bg-surface-2/30">
+<div class="flex items-center gap-stack-md">
+<span class="material-symbols-outlined text-primary">play_circle</span>
+<span class="font-body-md text-body-md text-on-surface font-semibold">5. Layer 4 vs Layer 7 Load Balancing</span>
+</div>
+<div class="flex items-center gap-stack-md">
+<span class="bg-primary text-on-primary font-label-sm text-label-sm px-2 py-0.5 rounded">Now Playing</span>
+<span class="font-label-sm text-label-sm text-on-surface">18:45</span>
+</div>
+</div>
+<div class="p-stack-md flex items-center justify-between hover:bg-surface-2 transition-all group">
+<div class="flex items-center gap-stack-md">
+<span class="material-symbols-outlined text-outline">lock</span>
+<span class="font-body-md text-body-md text-on-surface-variant">6. Health Checks and Circuit Breakers</span>
+</div>
+<div class="flex items-center gap-stack-md">
+<span class="font-label-sm text-label-sm text-on-surface-variant">22:10</span>
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors cursor-pointer">play_circle</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Section 3: Collapsed -->
+<div class="bg-surface-1 border border-outline-variant rounded-xl overflow-hidden">
+<div class="p-stack-md flex justify-between items-center hover:bg-surface-2 transition-all cursor-pointer">
+<div class="flex items-center gap-stack-md">
+<span class="material-symbols-outlined text-on-surface-variant">chevron_right</span>
+<div>
+<h3 class="font-label-md text-label-md text-on-surface">Section 3: Database Sharding &amp; Partitioning</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">12 lectures • 3h 40m</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline">lock</span>
+</div>
+</div>
+<!-- Bento Style Description Grid -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-stack-md mt-stack-lg">
+<div class="bg-surface-1 p-stack-md rounded-xl border border-outline-variant col-span-2">
+<h4 class="font-label-md text-label-md text-on-surface mb-2">What you'll learn</h4>
+<ul class="grid grid-cols-1 md:grid-cols-2 gap-2 text-on-surface-variant font-body-sm text-body-sm">
+<li class="flex items-start gap-2"><span class="material-symbols-outlined text-success text-sm">check</span> Design scalable backends</li>
+<li class="flex items-start gap-2"><span class="material-symbols-outlined text-success text-sm">check</span> Implement Consensus Algos</li>
+<li class="flex items-start gap-2"><span class="material-symbols-outlined text-success text-sm">check</span> Manage Global State</li>
+<li class="flex items-start gap-2"><span class="material-symbols-outlined text-success text-sm">check</span> Zero-downtime Migrations</li>
+</ul>
+</div>
+<div class="bg-primary/10 p-stack-md rounded-xl border border-primary/30">
+<h4 class="font-label-md text-label-md text-primary mb-2">Requirements</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Proficiency in Java or Go and understanding of basic networking protocols.</p>
+</div>
+</div>
+</div>
+<!-- Right Side: Sticky Stats & CTA -->
+<div class="md:col-span-4">
+<div class="sticky top-24 space-y-stack-md">
+<!-- Resume Learning Card -->
+<div class="bg-surface-1 rounded-xl border border-outline-variant p-stack-md glass-panel shadow-2xl">
+<div class="mb-stack-md">
+<div class="flex justify-between items-center mb-2">
+<span class="font-label-md text-label-md text-on-surface">Your Progress</span>
+<span class="font-label-sm text-label-sm text-primary">32% Completed</span>
+</div>
+<div class="w-full h-1.5 bg-surface-3 rounded-full overflow-hidden">
+<div class="h-full bg-primary w-1/3"></div>
+</div>
+</div>
+<button class="w-full bg-primary hover:bg-primary/90 text-on-primary-fixed font-label-md text-label-md py-stack-md rounded-lg flex items-center justify-center gap-2 transition-all active:scale-95 shadow-lg">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+                            Resume Learning
+                        </button>
+<button class="w-full mt-stack-sm bg-surface-2 hover:bg-surface-3 text-on-surface font-label-md text-label-md py-stack-md rounded-lg transition-all border border-outline-variant">
+                            Add Note
+                        </button>
+</div>
+<!-- Course Stats -->
+<div class="bg-surface-1 rounded-xl border border-outline-variant p-stack-md">
+<h4 class="font-label-md text-label-md text-on-surface mb-stack-md border-b border-outline-variant pb-2">Course Metrics</h4>
+<div class="space-y-stack-md">
+<div class="flex justify-between items-center">
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-primary">group</span>
+<span class="font-body-sm text-body-sm">Enrolled Students</span>
+</div>
+<span class="font-label-md text-label-md text-on-surface">12,492</span>
+</div>
+<div class="flex justify-between items-center">
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-primary">update</span>
+<span class="font-body-sm text-body-sm">Last Updated</span>
+</div>
+<span class="font-label-md text-label-md text-on-surface">Oct 2023</span>
+</div>
+<div class="flex justify-between items-center">
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-primary">workspace_premium</span>
+<span class="font-body-sm text-body-sm">Certificate</span>
+</div>
+<span class="font-label-md text-label-md text-success">Verified</span>
+</div>
+</div>
+</div>
+<!-- Instructor Notes -->
+<div class="bg-surface-1 rounded-xl border border-outline-variant p-stack-md">
+<h4 class="font-label-md text-label-md text-on-surface mb-stack-md">The Instructor</h4>
+<div class="flex items-center gap-stack-md mb-stack-md">
+<img alt="Instructor Portrait" class="w-12 h-12 rounded-lg object-cover" data-alt="A focused, professional portrait of a senior software architect with short, dark hair. He is wearing a minimalist dark polo shirt and clear glasses. The lighting is crisp and modern, with a slight rim light that separates him from a deep, atmospheric office background. The overall tone is authoritative, intelligent, and approachable, echoing the premium quality of the CourseMera platform." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC6hEYp2IVXCZXGYAjU0CdwTUpPa4wk17WT3UzRkDZJ7wx0BBHuV-PX3LQgsoVWWCOcG7BjnOauA8nk8w-3R2SN6Yny1TWw2GZzDi8YgwgLp2hPT-9MAbULL5ZHtxuoRZSynWgISeDiBd3pX01_xMJxdBtHGQ2-n-TPtK9ekv4NpnU3Jqi5589r8U6PvEvOS9pXH_f0XRn56bRV4EfEZ_V0F1MaYcqHUuEBgWwd3Iopj7hQD9DFg13oUZ6ZDtT6nN2oywZCpCxIszE"/>
+<div>
+<h5 class="font-label-md text-label-md text-on-surface">Dr. Elias Sterling</h5>
+<p class="font-body-sm text-body-sm text-primary">Ex-Principal Eng at CloudScale</p>
+</div>
+</div>
+<div class="p-stack-sm bg-surface-3/30 border-l-2 border-primary rounded-r-lg">
+<p class="font-body-sm text-body-sm italic text-on-surface-variant">
+                                "This module on Load Balancing is critical for the final project. Pay close attention to the Consistent Hashing lecture."
+                            </p>
+</div>
+<a class="inline-block mt-stack-md font-label-sm text-label-sm text-primary hover:underline transition-all" href="#">View Full Bio</a>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>

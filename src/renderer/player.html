@@ -5,18 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Player - CourseMera</title>
     <link rel="stylesheet" href="styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+    <!-- NOTE: For production builds, bundle these locally for offline support -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" onerror="">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" onerror="">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" onerror="window.Prism=null"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js" onerror=""></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js" onerror=""></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js" onerror=""></script>
 </head>
 <body>
     <header class="player-header">
-        <a href="index.html" class="back-link">← Back to Courses</a>
+        <a href="index.html" class="back-link">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+            Back to Courses
+        </a>
         <span id="courseTitleHeader" class="header-course-title"></span>
-        <button id="themeToggle" class="icon-btn" title="Toggle theme">🌙</button>
+        <button id="themeToggle" class="icon-btn" title="Toggle theme">
+            <svg id="themeIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
     </header>
 
     <div class="player-layout" id="playerLayout">
@@ -26,81 +32,141 @@
         </aside>
         <div class="player-content" id="playerContent">
             <div class="video-wrapper" id="videoWrapper">
-                <div class="double-click-left" id="doubleClickLeft"></div>
-                <div class="double-click-right" id="doubleClickRight"></div>
+
+                <!-- Double-click seek zones -->
+                <div class="dbl-zone dbl-zone-left" id="doubleClickLeft">
+                    <div class="dbl-zone-feedback" id="seekFeedbackLeft">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="white"><path d="M11 18V6l-8.5 6L11 18zm.5-6l8.5 6V6l-8.5 6z"/></svg>
+                        <span>-10s</span>
+                    </div>
+                </div>
+                <div class="dbl-zone dbl-zone-right" id="doubleClickRight">
+                    <div class="dbl-zone-feedback" id="seekFeedbackRight">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="white"><path d="M13 18V6l8.5 6L13 18zm-.5-6L4 18V6l8.5 6z"/></svg>
+                        <span>+10s</span>
+                    </div>
+                </div>
+
                 <video id="videoPlayer"></video>
+
+                <!-- Centre play/pause button (shows when paused) -->
                 <div class="video-overlay" id="videoOverlay">
-                    <button class="play-btn-large" id="playBtnLarge">▶</button>
+                    <button class="play-btn-large" id="playBtnLarge">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="white"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                    </button>
                 </div>
+
                 <div class="loading-spinner" id="loadingSpinner"></div>
-                <div class="seek-indicator" id="seekIndicator"></div>
-            </div>
-            <div class="html-content-container" id="htmlContentContainer" style="display: none;"></div>
-            <div class="controls-bar" id="controlsBar">
-                <div class="progress-container" id="progressContainer">
-                    <div class="progress-buffered" id="progressBuffered"></div>
-                    <div class="progress-bar" id="progressBar">
-                        <div class="progress-played" id="progressPlayed"></div>
-                    </div>
-                    <span class="time-tooltip" id="timeTooltip"></span>
-                </div>
-                <div class="controls-row">
-                    <div class="controls-left">
-                        <button class="ctrl-btn" id="playBtn">▶</button>
-                        <button class="ctrl-btn" id="rewindBtn" title="Rewind 10s (J)">⏪</button>
-                        <button class="ctrl-btn" id="forwardBtn" title="Forward 10s (L)">⏩</button>
-                        <div class="volume-control">
-                            <button class="ctrl-btn" id="muteBtn" title="Mute (M)">🔊</button>
-                            <input type="range" id="volumeSlider" min="0" max="1" step="0.1" value="1">
+
+                <!-- HTML lesson content (replaces video) -->
+                <div class="html-content-container" id="htmlContentContainer" style="display:none;"></div>
+
+                <!-- ===== CONTROLS OVERLAY ===== -->
+                <div class="controls-overlay" id="controlsBar">
+
+                    <!-- PROGRESS BAR -->
+                    <div class="progress-area" id="progressContainer">
+                        <div class="progress-track" id="progressBar">
+                            <div class="progress-buffered" id="progressBuffered"></div>
+                            <div class="progress-played" id="progressPlayed"></div>
                         </div>
-                        <span class="time-display" id="timeDisplay">0:00 / 0:00</span>
+                        <div class="progress-thumb" id="progressThumb"></div>
+                        <span class="time-tooltip" id="timeTooltip"></span>
                     </div>
-                    <div class="controls-right">
-                        <button class="ctrl-btn" id="speedBtn" title="Playback speed">1x</button>
-                        <button class="ctrl-btn" id="theaterBtn" title="Theater mode (T)">⛶</button>
-                        <button class="ctrl-btn" id="fullscreenBtn" title="Fullscreen (F)">⛶</button>
-                        <button class="ctrl-btn" id="pipBtn" title="Picture-in-Picture (I)">📺</button>
-                        <button class="ctrl-btn" id="helpBtn" title="Keyboard shortcuts (?)">❓</button>
+
+                    <!-- CONTROLS ROW -->
+                    <div class="controls-row">
+                        <div class="controls-left">
+                            <button class="ctrl-btn" id="playBtn" title="Play/Pause (Space)">
+                                <svg id="playIcon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                            </button>
+                            <button class="ctrl-btn" id="rewindBtn" title="Rewind 10s (J)">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/></svg>
+                            </button>
+                            <button class="ctrl-btn" id="forwardBtn" title="Forward 10s (L)">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 5V1l5 5-5 5V7c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6h2c0 4.42-3.58 8-8 8s-8-3.58-8-8 3.58-8 8-8z"/></svg>
+                            </button>
+                            <div class="volume-control">
+                                <button class="ctrl-btn" id="muteBtn" title="Mute (M)">
+                                    <svg id="volumeIcon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+                                </button>
+                                <input type="range" id="volumeSlider" min="0" max="1" step="0.05" value="1">
+                            </div>
+                            <span class="time-display" id="timeDisplay">0:00 / 0:00</span>
+                        </div>
+                        <div class="controls-right">
+                            <button class="ctrl-btn speed-btn" id="speedBtn" title="Playback speed">1×</button>
+                            <button class="ctrl-btn" id="theaterBtn" title="Theater mode (T)">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="1.5"/><path d="M2 3h20" stroke-linecap="round"/></svg>
+                            </button>
+                            <button class="ctrl-btn" id="fullscreenBtn" title="Fullscreen (F)">
+                                <svg id="fsIcon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+                            </button>
+                            <button class="ctrl-btn" id="pipBtn" title="Picture-in-Picture (I)">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="1"/><rect x="12" y="11" width="9" height="6" rx="1"/></svg>
+                            </button>
+                            <button class="ctrl-btn" id="helpBtn" title="Keyboard shortcuts (?)">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                            </button>
+                        </div>
                     </div>
                 </div>
+
+                <!-- Speed menu -->
+                <div class="speed-menu" id="speedMenu">
+                    <div class="speed-menu-title">Playback Speed</div>
+                    <button data-speed="0.25">0.25×</button>
+                    <button data-speed="0.5">0.5×</button>
+                    <button data-speed="0.75">0.75×</button>
+                    <button data-speed="1" class="active">1× (Normal)</button>
+                    <button data-speed="1.25">1.25×</button>
+                    <button data-speed="1.5">1.5×</button>
+                    <button data-speed="1.75">1.75×</button>
+                    <button data-speed="2">2×</button>
+                </div>
             </div>
-            <div class="speed-menu" id="speedMenu">
-                <button data-speed="0.25">0.25x</button>
-                <button data-speed="0.5">0.5x</button>
-                <button data-speed="0.75">0.75x</button>
-                <button data-speed="1">1x</button>
-                <button data-speed="1.25">1.25x</button>
-                <button data-speed="1.5">1.5x</button>
-                <button data-speed="1.75">1.75x</button>
-                <button data-speed="2">2x</button>
+
+            <!-- Navigation footer -->
+            <div class="sticky-footer" id="stickyFooter">
+                <button class="nav-btn" id="prevBtn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+                    Previous
+                </button>
+                <button class="complete-btn" id="stickyCompleteBtn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                    Mark Complete
+                </button>
+                <button class="nav-btn" id="nextBtn">
+                    Next
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+                </button>
             </div>
         </div>
     </div>
 
-    <div class="sticky-footer" id="stickyFooter">
-        <button class="nav-btn" id="prevBtn">← Previous</button>
-        <button class="complete-btn" id="stickyCompleteBtn">✓ Mark Complete</button>
-        <button class="nav-btn" id="nextBtn">Next →</button>
-    </div>
-
+    <!-- Keyboard help modal -->
     <div class="keyboard-help" id="keyboardHelp">
-        <h3>Keyboard Shortcuts</h3>
+        <div class="keyboard-help-header">
+            <h3>Keyboard Shortcuts</h3>
+            <button class="close-help-x" onclick="document.getElementById('keyboardHelp').style.display='none'">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+        </div>
         <div class="shortcut-grid">
-            <div><kbd>Space</kbd> / <kbd>K</kbd> <span>Play/Pause</span></div>
-            <div><kbd>J</kbd> <span>Rewind 10s</span></div>
-            <div><kbd>L</kbd> <span>Forward 10s</span></div>
-            <div><kbd>←</kbd> <span>Rewind 5s</span></div>
-            <div><kbd>→</kbd> <span>Forward 5s</span></div>
-            <div><kbd>↑</kbd> <span>Volume Up</span></div>
-            <div><kbd>↓</kbd> <span>Volume Down</span></div>
-            <div><kbd>M</kbd> <span>Mute</span></div>
-            <div><kbd>F</kbd> <span>Fullscreen</span></div>
-            <div><kbd>T</kbd> <span>Theater Mode</span></div>
-            <div><kbd>I</kbd> <span>Picture-in-Picture</span></div>
-            <div><kbd>&lt;</kbd> <span>Slower Speed</span></div>
-            <div><kbd>&gt;</kbd> <span>Faster Speed</span></div>
-            <div><kbd>0-9</kbd> <span>Jump to 0%-90%</span></div>
-            <div><kbd>?</kbd> <span>Show Help</span></div>
+            <div><kbd>Space</kbd><kbd>K</kbd><span>Play / Pause</span></div>
+            <div><kbd>J</kbd><span>Rewind 10s</span></div>
+            <div><kbd>L</kbd><span>Forward 10s</span></div>
+            <div><kbd>←</kbd><span>Rewind 5s</span></div>
+            <div><kbd>→</kbd><span>Forward 5s</span></div>
+            <div><kbd>↑</kbd><span>Volume Up</span></div>
+            <div><kbd>↓</kbd><span>Volume Down</span></div>
+            <div><kbd>M</kbd><span>Mute</span></div>
+            <div><kbd>F</kbd><span>Fullscreen</span></div>
+            <div><kbd>T</kbd><span>Theater Mode</span></div>
+            <div><kbd>I</kbd><span>Picture-in-Picture</span></div>
+            <div><kbd>&lt;</kbd><kbd>&gt;</kbd><span>Speed ±</span></div>
+            <div><kbd>0–9</kbd><span>Jump to 0–90%</span></div>
+            <div><kbd>?</kbd><span>Toggle Help</span></div>
         </div>
         <button class="close-help" onclick="document.getElementById('keyboardHelp').style.display='none'">Close</button>
     </div>

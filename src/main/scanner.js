@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const getDuration = require('get-video-duration').getVideoDuration;
+const logger = require('./logger');
 
 const CATEGORIES = {
     'ai': ['ai', 'machine learning', 'deep learning', 'tensorflow', 'pytorch', 'llm', 'chatgpt', 'nlp', 'hugging face', 'langchain'],
@@ -37,9 +38,9 @@ async function getVideoDurationSafe(filePath) {
             return `${minutes}:${seconds.toString().padStart(2, '0')}`;
         }
     } catch (e) {
-        console.error('Duration error:', e.message);
+        logger.error('Duration error for', filePath, ':', e.message);
     }
-    return '10:00';
+    return null;
 }
 
 function parseHtmlLesson(filePath) {
@@ -53,40 +54,42 @@ function parseHtmlLesson(filePath) {
                 content: contentMatch ? contentMatch[1].trim() : ''
             };
         }
-    } catch (e) {}
+    } catch (e) {
+        logger.error('HTML parse error:', filePath, e.message);
+    }
     return { title: 'Lesson', content: '' };
 }
 
 async function scanCourses(coursesPath) {
-    console.log('Scanning courses from:', coursesPath);
+    logger.info('Scanning courses from:', coursesPath);
     
     const entries = fs.readdirSync(coursesPath, { withFileTypes: true });
     const courses = [];
     
     for (const entry of entries) {
         if (entry.isDirectory()) {
-            console.log(`Scanning: ${entry.name}`);
+            logger.info(`Scanning: ${entry.name}`);
             try {
                 const course = await scanCourse(path.join(coursesPath, entry.name), entry.name);
                 if (course.totalVideos > 0) {
                     courses.push(course);
-                    console.log(`  Found ${course.totalVideos} items`);
+                    logger.info(`  Found ${course.totalVideos} items`);
                 }
             } catch (e) {
-                console.error(`Error scanning ${entry.name}:`, e.message);
+                logger.error(`Error scanning ${entry.name}:`, e.message);
             }
         }
     }
     
-    console.log(`\nTotal courses: ${courses.length}`);
-    console.log(`Total items: ${courses.reduce((sum, c) => sum + c.totalVideos, 0)}`);
+    logger.info(`Total courses: ${courses.length}`);
+    logger.info(`Total items: ${courses.reduce((sum, c) => sum + c.totalVideos, 0)}`);
     
     return courses;
 }
 
 async function scanCourse(folderPath, folderName) {
     const title = folderName.replace(/^ZeroToMastery\s*-\s*/i, '').replace(/\s*\(\d+\.\d+\)$/, '').trim();
-    const courseId = generateId(title);
+    const courseId = generateId(folderName);
     const category = getCategory(title);
     const thumbnail = `https://picsum.photos/seed/${courseId}/400/225`;
     
@@ -109,20 +112,22 @@ async function scanCourse(folderPath, folderName) {
                 
                 if (file.toLowerCase().endsWith('.mp4')) {
                     const duration = await getVideoDurationSafe(filePath);
-                    const parts = duration.split(':').map(Number);
-                    if (parts.length === 3) {
-                        totalDuration.hours += parts[0];
-                        totalDuration.minutes += parts[1];
-                        totalDuration.seconds += parts[2];
-                    } else if (parts.length === 2) {
-                        totalDuration.minutes += parts[0];
-                        totalDuration.seconds += parts[1];
+                    if (duration) {
+                        const parts = duration.split(':').map(Number);
+                        if (parts.length === 3) {
+                            totalDuration.hours += parts[0];
+                            totalDuration.minutes += parts[1];
+                            totalDuration.seconds += parts[2];
+                        } else if (parts.length === 2) {
+                            totalDuration.minutes += parts[0];
+                            totalDuration.seconds += parts[1];
+                        }
                     }
                     
                     videos.push({
                         name: file.replace(/\.mp4$/i, '').replace(/^\d+[\.\s]*/, '').trim(),
                         file: path.join(folderName, entry.name, file),
-                        duration: duration,
+                        duration: duration || '--:--',
                         type: 'video'
                     });
                     totalVideos++;
