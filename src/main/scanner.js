@@ -1,7 +1,11 @@
 const fs = require('fs');
 const path = require('path');
 const getDuration = require('get-video-duration').getVideoDurationInSeconds;
+const ffprobe = require('@ffprobe-installer/ffprobe');
 const logger = require('./logger');
+
+// Fix for ffprobe path in packaged app
+const ffprobePath = ffprobe.path.replace('app.asar', 'app.asar.unpacked');
 
 const CATEGORIES = {
     'ai': ['ai', 'machine learning', 'deep learning', 'tensorflow', 'pytorch', 'llm', 'chatgpt', 'nlp', 'hugging face', 'langchain'],
@@ -27,7 +31,7 @@ function generateId(title) {
 async function getVideoDurationSafe(filePath) {
     try {
         if (fs.existsSync(filePath)) {
-            const duration = await getDuration(filePath);
+            const duration = await getDuration(filePath, ffprobePath);
             const totalSeconds = Math.floor(duration);
             const hours = Math.floor(totalSeconds / 3600);
             const minutes = Math.floor((totalSeconds % 3600) / 60);
