@@ -37,6 +37,7 @@ Watch CourseMera in action:
 <video width="800" loop autoplay muted playsinline>
   <img src="assets/videos/coursemera-demo.gif" alt="CourseMera Demo">
 </video>
+
 *See how to select your folder, browse courses, and use the video player*
 
 ## Installation
