@@ -161,9 +161,7 @@ function updateStats() {
     document.getElementById('totalCourses').textContent = courses.length;
     document.getElementById('totalVideos').textContent = totalVideos.toLocaleString();
     
-    const progress = JSON.parse(localStorage.getItem('progress') || '{}');
-    const completed = Object.values(progress).reduce((sum, p) => sum + (p.watched?.length || 0), 0);
-    document.getElementById('completedVideos').textContent = completed;
+
 }
 
 function setupEventListeners() {
