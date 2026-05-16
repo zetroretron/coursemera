@@ -15,6 +15,20 @@ A beautiful desktop learning platform for video courses. Built with Electron, Co
 - **HTML Lessons**: Support for text-based HTML lessons alongside video content
 - **Cross-Platform**: Works on Windows, Mac, and Linux
 
+## Screenshots
+
+### Dashboard / Home Screen
+![CourseMera Dashboard](assets/screenshots/01-dashboard-home.png)
+*Main dashboard showing search, stats, continue learning section, and category filters*
+
+### Course Syllabus / Section List (Collapsed View)
+![CourseMera Course Syllabus](assets/screenshots/02-course-syllabus.png)
+*Detailed course view with expandable sections, progress tracking, and resume functionality*
+
+### Video Player / Lesson View
+![CourseMera Video Player](assets/screenshots/03-video-player.png)
+*Lesson player with video controls, section sidebar, and navigation between lessons*
+
 ## Installation
 
 ### Pre-built Releases
