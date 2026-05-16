@@ -29,6 +29,16 @@ A beautiful desktop learning platform for video courses. Built with Electron, Co
 ![CourseMera Video Player](assets/screenshots/03-video-player.png)
 *Lesson player with video controls, section sidebar, and navigation between lessons*
 
+## Demo
+
+Watch CourseMera in action:
+
+<video width="800" controls>
+  <source src="assets/videos/coursemera-demo.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
+*See how to select your folder, browse courses, and use the video player*
+
 ## Installation
 
 ### Pre-built Releases
