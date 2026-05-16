@@ -2,8 +2,8 @@ const { app, BrowserWindow, ipcMain, dialog, shell } = require('electron');
 const path = require('path');
 const fs = require('fs');
 const logger = require('./logger');
-const server = require('./server');
-const scanner = require('./scanner');
+const server = require('./services/server');
+const scanner = require('./services/scanner');
 const updater = require('./updater');
 
 const ICON_PATH = app.isPackaged
@@ -13,6 +13,7 @@ const ICON_PATH = app.isPackaged
 let mainWindow = null;
 let coursesFolder = null;
 
+// Ensure only one instance of the app runs
 const gotTheLock = app.requestSingleInstanceLock();
 if (!gotTheLock) {
     app.quit();
@@ -25,6 +26,7 @@ app.on('second-instance', () => {
     }
 });
 
+// Handle uncaught exceptions and unhandled rejections
 process.on('uncaughtException', (error) => {
     logger.error('Uncaught Exception:', error.stack || error.message);
     dialog.showErrorBox('Error', `An unexpected error occurred: ${error.message}`);
@@ -45,9 +47,10 @@ function createMainWindow(port) {
         backgroundColor: '#0d1117',
         icon: ICON_PATH,
         webPreferences: {
-            nodeIntegration: false,
+            preload: path.join(__dirname, 'preload.js'),
             contextIsolation: true,
-            preload: path.join(__dirname, 'preload.js')
+            // Additional security: sandbox the renderer process
+            sandbox: true
         },
         show: false
     });
@@ -95,9 +98,10 @@ async function initializeApp() {
         createMainWindow(port);
         
         updater.init();
-        if (!app.isPackaged) {
-            logger.info('Skip checkForUpdates because application is not packed and dev update config is not forced');
-        }
+        // Check for updates after app is ready (but not too soon to annoy user)
+        setTimeout(() => {
+            updater.checkForUpdates();
+        }, 15000);
         
         logger.info('App ready, starting...');
     } catch (error) {
