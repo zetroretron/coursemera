@@ -48,7 +48,7 @@ Unlike cloud-based platforms that require subscriptions, uploads, and compromise
 ## Demo
 
 Watch CourseMera in action:
-
+![CourseMera Demo](assets/videos/coursemera-demo.gif)
 <video width="800" loop autoplay muted playsinline>
   <img src="assets/videos/coursemera-demo.gif" alt="CourseMera Demo">
 </video>
