@@ -33,10 +33,7 @@ A beautiful desktop learning platform for video courses. Built with Electron, Co
 
 Watch CourseMera in action:
 
-<video width="800" controls>
-  <source src="assets/videos/coursemera-demo.mp4" type="video/mp4">
-  Your browser does not support the video tag.
-</video>
+![CourseMera Demo](assets/videos/coursemera-demo.mp4)
 *See how to select your folder, browse courses, and use the video player*
 
 ## Installation
